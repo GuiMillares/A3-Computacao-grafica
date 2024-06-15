@@ -1,3 +1,6 @@
+### Guilherme de Castro Millares
+### RA: 82117027
+
 # Gerador de Avatar
 
 Este é um projeto de demonstração de um gerador de avatar dinâmico que cria avatares únicos com base no texto inserido pelo usuário. Cada entrada gera um avatar distinto usando um algoritmo que utiliza hash para determinar formas e cores.
