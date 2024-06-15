@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Avatar</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f06, #4a90e2);
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #input-text {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 250px;
+            text-align: center;
+        }
+        #hash-button {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        #avatar-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            background-color: white;
+            border: 2px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .shape {
+            position: absolute;
+        }
+        .circle {
+            border-radius: 50%;
+        }
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid;
+        }
+    </style>
+</head>
+<body>
+    <h1>Digite um Identificador</h1>
+    <div class="input-container">
+        <input type="text" id="input-text">
+        <button id="hash-button">🔑</button>
+    </div>
+    <div id="avatar-container"></div>
+
+    <script>
+        // Função de hash para converter uma string em um número
+        function hashCode(str) {
+            var hash = 0;
+            if (str.length === 0) return hash;
+            for (var i = 0; i < str.length; i++) {
+                var char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        // Função para calcular hash SHA-256
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        document.getElementById('input-text').addEventListener('input', generateAvatar);
+
+        document.getElementById('hash-button').addEventListener('click', async function() {
+            const text = document.getElementById('input-text').value;
+            const hash = await sha256(text);
+            alert('Hash SHA-256: ' + hash);
+        });
+
+        async function generateAvatar() {
+            const text = document.getElementById('input-text').value;
+            const container = document.getElementById('avatar-container');
+            container.innerHTML = ''; // Clear previous shapes
+
+            // Calcula o valor de hash SHA-256 da palavra digitada
+            const hash = await sha256(text);
+
+            // Converte parte da hash para um número inicial
+            let hashNum = parseInt(hash.substring(0, 8), 16);
+
+            const shapes = ['circle', 'square', 'triangle'];
+            const colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FF33A8', '#33FFD7', '#FFD733'];
+
+            for (let i = 0; i < text.length; i++) {
+                // Usa o valor de hash para determinar o tipo de forma, cor e posição
+                const shapeIndex = (hashNum + i) % shapes.length; // Existem 3 tipos de formas
+                const colorIndex = (hashNum + i) % colors.length; // Existem 7 cores
+                const x = (hashNum + i * 31) % 250;
+                const y = (hashNum + i * 47) % 250;
+                const size = 30 + (hashNum + i * 13) % 50; // Tamanho variável entre 30 e 80
+                const rotation = (hashNum + i * 19) % 360; // Rotação em graus
+
+                const shapeType = shapes[shapeIndex];
+                const color = colors[colorIndex];
+
+                const shape = document.createElement('div');
+                shape.classList.add('shape', shapeType);
+                shape.style.backgroundColor = color;
+                shape.style.left = x + 'px';
+                shape.style.top = y + 'px';
+                shape.style.transform = `rotate(${rotation}deg)`;
+
+                if (shapeType === 'circle') {
+                    shape.style.width = size + 'px';
+                    shape.style.height = size + 'px';
+                } else if (shapeType === 'square') {
+                    shape.style.width = size + 'px';
+                    shape.style.height = size + 'px';
+                } else if (shapeType === 'triangle') {
+                    shape.style.borderLeftWidth = size / 2 + 'px';
+                    shape.style.borderRightWidth = size / 2 + 'px';
+                    shape.style.borderBottomWidth = size + 'px';
+                    shape.style.borderBottomColor = color;
+                    shape.style.backgroundColor = 'transparent';
+                }
+
+                container.appendChild(shape);
+
+                // Atualiza o valor de hash com base no caractere atual
+                hashNum = parseInt(hashCode(hashNum.toString() + text.charCodeAt(i)), 16);
+            }
+        }
+    </script>
+</body>
+</html>
