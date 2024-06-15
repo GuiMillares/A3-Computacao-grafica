@@ -7,10 +7,10 @@ Este é um projeto de demonstração de um gerador de avatar dinâmico que cria 
 
 ## Sumário
 
-- **Instalação**
-- **Uso**
-- **Estrutura do Código**
-- **Licença**
+- **[Instalação](#instalação)**
+- **[Uso](#uso)**
+- **[Estrutura do Código](#estrutura-do-código)**
+- **[Licença](#licença)**
 
 ## Instalação
 
@@ -43,5 +43,3 @@ O código consiste em um arquivo HTML que inclui um campo de input e um contêin
 Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
 ---
-
-Este README.md fornece uma visão geral clara do projeto, incluindo instruções de instalação, uso, estrutura do código e informações sobre a licença.
