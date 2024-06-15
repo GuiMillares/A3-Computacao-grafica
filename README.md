@@ -34,20 +34,6 @@ Para executar este projeto localmente, siga os passos abaixo:
 
 O código consiste em um arquivo HTML que inclui um campo de input e um contêiner para exibir o avatar gerado. O avatar é desenhado dinamicamente usando funções de desenho e uma hash gerada a partir do input do usuário.
 
-**Estrutura do Diretório**
-```
-gerador-avatar/
-├── index.html
-├── scripts/
-│   ├── keygen.js
-│   ├── main.js
-│   ├── utils/
-│   │   └── colors/
-│   │       └── color.js
-├── styles/
-│   └── main.css
-└── README.md
-```
 
 ### Funções Principais
 
